@@ -1,5 +1,12 @@
-import React from 'react';
-import {useState, useEffect} from 'react';
+import React, { useState } from 'react';
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+  CardFooter,
+} from '@/components/ui/card';
+
 import Book1 from '../assets/book1.png';
 import Book2 from '../assets/book2.png';
 import Book3 from '../assets/book3.png';
@@ -25,8 +32,6 @@ import Book22 from "../assets/book22.png";
 import Book23 from "../assets/book23.png";
 import Book24 from "../assets/book24.png";
 import Book25 from "../assets/book25.png";
- 
-import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/Card'; 
 
         const booksList = {
           all: [
@@ -59,8 +64,8 @@ import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/Card';
     author: "Lori Roy" 
   }, 
   { img: Book25, 
-    title: "Battle of the Bookstores", 
-    author: "Ali Brady" 
+    title: "The Thrashers", 
+    author: "Julie Soto" 
   }, 
   { img: Book13, 
     title: "Into the Faerie Hill", 
@@ -210,32 +215,32 @@ import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/Card';
 };
 
 const Books = ({ selectedGenre, searchTerm, mybooks, setMybooks }) => {
-  const booksToDisplay = selectedGenre === 'all' ? booksList.all : booksList[selectedGenre] || []
+  const booksToDisplay =
+    selectedGenre === 'all' ? booksList.all : booksList[selectedGenre] || [];
 
-  const filteredBooks = booksToDisplay.filter(book =>
+  const filteredBooks = booksToDisplay.filter((book) =>
     book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     book.author.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  );
 
   const [readStates, setReadStates] = useState(() => {
-    const saved = localStorage.getItem('mybooks-readStates')
-    if (saved) return JSON.parse(saved)
-    return {}
-  })
+    const saved = localStorage.getItem('mybooks-readStates');
+    return saved ? JSON.parse(saved) : {};
+  });
 
   const toggleRead = (title) => {
-    setReadStates(prev => {
-      const updated = { ...prev, [title]: !prev[title] }
-      localStorage.setItem('mybooks-readStates', JSON.stringify(updated))
-      return updated
-    })
-  }
+    setReadStates((prev) => {
+      const updated = { ...prev, [title]: !prev[title] };
+      localStorage.setItem('mybooks-readStates', JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   const handleAddBook = (book) => {
-    if (!mybooks.find(b => b.title === book.title)) {
-      setMybooks([...mybooks, book])
+    if (!mybooks.find((b) => b.title === book.title)) {
+      setMybooks([...mybooks, book]);
     }
-  }
+  };
 
   return (
     <div className="books">
@@ -243,31 +248,32 @@ const Books = ({ selectedGenre, searchTerm, mybooks, setMybooks }) => {
         <p>No books found</p>
       ) : (
         filteredBooks.map(({ img, title, author }) => (
-          <Card key={title} >
-             <CardHeader>
-    <img src={img} alt={title} />
-  </CardHeader>
-  <CardContent>
-    <CardTitle>{title}</CardTitle>
-    <p>{author}</p>
-    <button
-      onClick={() => handleAddBook({ img, title, author })}
-      
-    >
-      Add
-    </button>
-    <button
-      onClick={() => toggleRead(title)}
-    
-    >
-      {readStates[title] ? "Read" : "Unread"}
-      </button>
-      </CardContent>
-       </Card>
-      ))
-    )}
-  </div>
- );
-}
+          <Card key={title} className="p-2 max-w-[200px] text-center">
+            <CardHeader className="p-0">
+              <img
+                src={img}
+                alt={title}
+                className="w-[180px] h-[270px] rounded-lg border-2 border-[#6f8994]"
+              />
+            </CardHeader>
+            <CardContent className="mt-3 px-2">
+                <h3>{title}</h3>
+                <p className="text-sm text-muted-foreground mb-3">{author}</p>
+              <div className="flex justify-center gap-2">
+                <button onClick={() => handleAddBook({ img, title, author })}>
+                  Add
+                </button>
+                <button onClick={() => toggleRead(title)}>
+                   {readStates[title] ? 'Read' : 'Unread'}
+                </button>
+              </div>
+            </CardContent>
 
-export default Books
+          </Card>
+        ))
+      )}
+    </div>
+  );
+};
+
+export default Books;

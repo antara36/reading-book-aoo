@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
-import Filter from './Filter';
-import Books from './Books';
+import React, { useState, useEffect } from 'react';
+import Books from './components/Books';
 
 const FilterBooks = () => {
   const [selectedGenre, setSelectedGenre] = useState('recentReleased');
   const [searchTerm, setSearchTerm] = useState('');
+  const [mybooks, setMybooks] = useState([]);
+
+  useEffect(() => {
+    const savedBooks = JSON.parse(localStorage.getItem('mybooks-list')) || [];
+    setMybooks(savedBooks);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('mybooks-list', JSON.stringify(mybooks));
+  }, [mybooks]);
 
   return (
     <>
@@ -14,7 +23,12 @@ const FilterBooks = () => {
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
       />
-      <Books selectedGenre={selectedGenre} searchTerm={searchTerm} />
+      <Books
+        selectedGenre={selectedGenre}
+        searchTerm={searchTerm}
+        mybooks={mybooks}
+        setMybooks={setMybooks}
+      />
     </>
   );
 };
